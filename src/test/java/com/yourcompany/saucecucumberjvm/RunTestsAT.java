@@ -2,10 +2,12 @@ package com.yourcompany.saucecucumberjvm;
  
 import org.junit.runner.RunWith;
 
-import cucumber.junit.Cucumber;
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
 
  
 @RunWith(Cucumber.class)
-@Cucumber.Options(tags = {"@guineapig"},format={"pretty", "html:target/cucumber"})
+@CucumberOptions(tags = {"@guineapig"},format={"pretty", "html:target/cucumber"})
 public class RunTestsAT {
 }
