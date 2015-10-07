@@ -1,4 +1,4 @@
-@guineapig
+@guineapig2
 Feature: Sauce Labs Guinea Pig
   
   Scenario: We want to click on the link and verify it takes us to a new page
