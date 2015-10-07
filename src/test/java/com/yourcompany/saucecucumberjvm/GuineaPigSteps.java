@@ -17,15 +17,10 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Rule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import static org.junit.Assert.assertEquals;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +39,6 @@ public class GuineaPigSteps {
 	public void UpdateResults() throws JSONException, ClientProtocolException, IOException {
 		HttpClient httpclient = HttpClientBuilder.create().build();
 		String apiUrl = "https://" + USERNAME + ":" + ACCESS_KEY + "@saucelabs.com/rest/v1/"+ USERNAME +"/jobs/" + jobId;
-		System.out.println(apiUrl);
         HttpPut putRequest = new HttpPut(apiUrl);
         
         putRequest.addHeader("content-type", "application/json");
@@ -58,19 +52,9 @@ public class GuineaPigSteps {
         
         HttpResponse response = httpclient.execute(putRequest);
         String bodyAsString = EntityUtils.toString(response.getEntity());
-    	System.out.println("Response to put request is : " + bodyAsString);
+    	//System.out.println("Response to put request is : " + bodyAsString);
 	}
 	
-	public class SimpleOnFailed extends TestWatcher {
-	    @Override
-	    protected void failed(Throwable e, Description description) {
-	        System.out.println("Only outed when a test fails");
-	    };
-	}
-	
-    @Rule
-    public SimpleOnFailed ruleExample = new SimpleOnFailed();
-    
 	@Before
 	public void setUp() throws Throwable {
         DesiredCapabilities caps = DesiredCapabilities.firefox();
@@ -98,10 +82,7 @@ public class GuineaPigSteps {
 	@Then("^I should see a new page$")
 	public void new_page_displayed() throws Throwable {
 		String page_title = driver.getTitle();
-		if (Objects.equals(page_title, "I am another page title - Sauce Labs")) {
-			testResults = true;
-		}
-		assertEquals("I am another page title - Sauce Labs", page_title);
+		testResults = Objects.equals(page_title, "I am another page title - Sauce Labs");
 	}
 	
 	@After

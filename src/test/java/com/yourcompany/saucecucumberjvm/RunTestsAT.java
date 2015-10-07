@@ -6,6 +6,6 @@ import cucumber.junit.Cucumber;
 
  
 @RunWith(Cucumber.class)
-@Cucumber.Options(format={"pretty", "html:target/cucumber"})
-public class RunTests {
+@Cucumber.Options(tags = {"@guineapig"},format={"pretty", "html:target/cucumber"})
+public class RunTestsAT {
 }
