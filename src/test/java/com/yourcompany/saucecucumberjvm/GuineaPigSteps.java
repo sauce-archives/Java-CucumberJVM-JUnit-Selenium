@@ -1,12 +1,14 @@
 package com.yourcompany.saucecucumberjvm;
 
+import cucumber.api.Scenario;
+
 import java.io.*;
 
-import cucumber.annotation.After;
-import cucumber.annotation.Before;
-import cucumber.annotation.en.Given;
-import cucumber.annotation.en.Then;
-import cucumber.annotation.en.When;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -17,12 +19,12 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.net.URL;
 
@@ -34,11 +36,11 @@ public class GuineaPigSteps {
 	public static WebDriver driver;
 	public String sessionId;
 	public boolean testResults;
-	public String jobId;
+	public String jobName;
 	
-	public void UpdateResults() throws JSONException, ClientProtocolException, IOException {
+	public void UpdateResults(boolean testResults) throws JSONException, ClientProtocolException, IOException {
 		HttpClient httpclient = HttpClientBuilder.create().build();
-		String apiUrl = "https://" + USERNAME + ":" + ACCESS_KEY + "@saucelabs.com/rest/v1/"+ USERNAME +"/jobs/" + jobId;
+		String apiUrl = "https://" + USERNAME + ":" + ACCESS_KEY + "@saucelabs.com/rest/v1/"+ USERNAME +"/jobs/" + sessionId;
         HttpPut putRequest = new HttpPut(apiUrl);
         
         putRequest.addHeader("content-type", "application/json");
@@ -50,22 +52,23 @@ public class GuineaPigSteps {
     	StringEntity params = new StringEntity(keyArg.toString());
     	putRequest.setEntity(params);
         
-        HttpResponse response = httpclient.execute(putRequest);
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-    	//System.out.println("Response to put request is : " + bodyAsString);
+       httpclient.execute(putRequest);
 	}
 	
 	@Before
-	public void setUp() throws Throwable {
-        DesiredCapabilities caps = DesiredCapabilities.firefox();
-        caps.setCapability("platform", "Windows 8.1");
-        caps.setCapability("version", "40.0");
-        caps.setCapability("name", "Java Cucumber Test");
+	public void setUp(Scenario scenario) throws Throwable {
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability("platform", System.getenv("platform"));
+        caps.setCapability("browserName", System.getenv("browserName"));
+        caps.setCapability("version", System.getenv("version"));
+        caps.setCapability("name", scenario.getName());
 
 	    driver = new RemoteWebDriver(new URL(URL), caps);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         
-        jobId = (((RemoteWebDriver) driver).getSessionId()).toString();
+        jobName = caps.getCapability("name").toString();
+        
+        sessionId = (((RemoteWebDriver) driver).getSessionId()).toString();
         testResults = false;
 	}
 	
@@ -82,12 +85,14 @@ public class GuineaPigSteps {
 	@Then("^I should see a new page$")
 	public void new_page_displayed() throws Throwable {
 		String page_title = driver.getTitle();
-		testResults = Objects.equals(page_title, "I am another page title - Sauce Labs");
+		Assert.assertTrue(page_title.equals("I am another page title - Sauce Labs"));
+		testResults = true;
 	}
 	
 	@After
 	public void tearDown() throws Throwable {
 		driver.quit();
-		UpdateResults();
+		UpdateResults(testResults);
+		System.out.println("SauceOnDemandSessionID="+ sessionId + "job-name="+ jobName);
 	}
 }
