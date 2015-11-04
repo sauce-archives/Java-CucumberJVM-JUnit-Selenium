@@ -87,7 +87,7 @@
                    <argLine>-Dfile.encoding=UTF-8</argLine>
                    <useFile>false</useFile>
                    <includes>
-                   	 <include>**/*ATtest.class</include>
+                   	 <include>**/*AT.class</include>
                    </includes>
                    <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
