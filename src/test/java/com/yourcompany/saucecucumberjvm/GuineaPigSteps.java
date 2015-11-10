@@ -25,6 +25,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import com.saucelabs.saucerest.SauceREST;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.net.URL;
 
@@ -39,20 +43,10 @@ public class GuineaPigSteps {
 	public String jobName;
 	
 	public void UpdateResults(boolean testResults) throws JSONException, ClientProtocolException, IOException {
-		HttpClient httpclient = HttpClientBuilder.create().build();
-		String apiUrl = "https://" + USERNAME + ":" + ACCESS_KEY + "@saucelabs.com/rest/v1/"+ USERNAME +"/jobs/" + sessionId;
-        HttpPut putRequest = new HttpPut(apiUrl);
-        
-        putRequest.addHeader("content-type", "application/json");
-        putRequest.addHeader("Accept", "application/json");
-        
-        JSONObject keyArg = new JSONObject();
-        keyArg.put("passed", testResults);
-        
-    	StringEntity params = new StringEntity(keyArg.toString());
-    	putRequest.setEntity(params);
-        
-       httpclient.execute(putRequest);
+		SauceREST saucerest = new SauceREST(USERNAME, ACCESS_KEY);
+    	Map<String, Object> updates = new HashMap<String, Object>();
+        updates.put("passed", testResults);
+        saucerest.updateJobInfo(sessionId, updates);
 	}
 	
 	@Before
