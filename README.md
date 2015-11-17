@@ -8,5 +8,7 @@
 # Running the tests
 to run: `make run_all_in_parallel`
 
-# Running the tests
-You will need JDK 1.6. CucumberJVM does not officially support JDK 1.8
+# Running the tests with a proxy - replace PORT with port number and localhost as necessary
+```
+mvn -Dhttp.proxyHost=localhost -Dhttp.proxyPort=PORT -Dhttps.proxyHost=localhost -Dhttps.proxyPort=PORT -Dhttps.proxyPort=PORT test
+```
