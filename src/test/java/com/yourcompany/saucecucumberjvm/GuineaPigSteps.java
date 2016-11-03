@@ -10,27 +10,16 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.saucelabs.saucerest.SauceREST;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.net.URL;
+
+import Utils.SauceUtils;
 
 public class GuineaPigSteps {
 
@@ -39,15 +28,7 @@ public class GuineaPigSteps {
 	public static final String URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@ondemand.saucelabs.com:443/wd/hub";
 	public static WebDriver driver;
 	public String sessionId;
-	public boolean testResults;
 	public String jobName;
-
-	public void UpdateResults(boolean testResults) throws JSONException, ClientProtocolException, IOException {
-		SauceREST saucerest = new SauceREST(USERNAME, ACCESS_KEY);
-    	Map<String, Object> updates = new HashMap<String, Object>();
-        updates.put("passed", testResults);
-        saucerest.updateJobInfo(sessionId, updates);
-	}
 
 	@Before
 	public void setUp(Scenario scenario) throws Throwable {
@@ -63,7 +44,6 @@ public class GuineaPigSteps {
         jobName = caps.getCapability("name").toString();
 
         sessionId = (((RemoteWebDriver) driver).getSessionId()).toString();
-        testResults = false;
 	}
 
 	@Given("^I am on the Sauce Labs Guinea Pig test page$")
@@ -80,13 +60,12 @@ public class GuineaPigSteps {
 	public void new_page_displayed() throws Throwable {
 		String page_title = driver.getTitle();
 		Assert.assertTrue(page_title.equals("I am another page title - Sauce Labs"));
-		testResults = true;
 	}
 
 	@After
-	public void tearDown() throws Throwable {
+	public void tearDown(Scenario scenario) throws Throwable {
 		driver.quit();
-		UpdateResults(testResults);
+		SauceUtils.UpdateResults(USERNAME, ACCESS_KEY, !scenario.isFailed(), sessionId);
 		System.out.println("SauceOnDemandSessionID="+ sessionId + "job-name="+ jobName);
 	}
 }
