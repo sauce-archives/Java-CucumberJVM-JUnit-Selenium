@@ -87,11 +87,6 @@
                 <configuration>
                    <forkCount>6</forkCount>
                    <reuseForks>false</reuseForks>
-                   <argLine>-Duser.language=en</argLine>
-                   <argLine>-Xmx1024m</argLine>
-                   <argLine>-XX:MaxPermSize=256m</argLine>
-                   <argLine>-Dfile.encoding=UTF-8</argLine>
-                   <useFile>false</useFile>
                    <includes>
                    	 <include>**/*AT.class</include>
                    </includes>
