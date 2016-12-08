@@ -18,8 +18,13 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.util.concurrent.TimeUnit;
 import java.net.URL;
+import static org.junit.Assert.*;
+
 
 import com.yourcompany.saucecucumberjvm.utils.SauceUtils;
+import com.yourcompany.saucecucumberjvm.Pages.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import org.openqa.selenium.support.PageFactory;
 
 public class GuineaPigSteps {
 
@@ -46,20 +51,36 @@ public class GuineaPigSteps {
         sessionId = (((RemoteWebDriver) driver).getSessionId()).toString();
 	}
 
-	@Given("^I am on the Sauce Labs Guinea Pig test page$")
+	@Given("^I am on the Guinea Pig homepage$")
 	public void user_is_on_guinea_pig_page() throws Throwable {
-        driver.get("https://saucelabs.com/test/guinea-pig");
+		GuineaPigPage gpage = PageFactory.initElements(driver, GuineaPigPage.class);
+		gpage.visitPage();
 	}
 
 	@When("^I click on the link$")
 	public void user_click_on_the_link() throws Throwable {
-		driver.findElement(By.linkText("i am a link")).click();
+		GuineaPigPage gpage = PageFactory.initElements(driver, GuineaPigPage.class);
+		gpage.followLink();
 	}
 
-	@Then("^I should see a new page$")
+	@When("^I submit a comment$")
+	public void user_submit_comment() throws Throwable {
+		String commentInputText = "This is a test comment";
+		GuineaPigPage page = PageFactory.initElements(driver, GuineaPigPage.class);
+		page.submitComment(commentInputText);
+	}
+
+	@Then("^I should be on another page$")
 	public void new_page_displayed() throws Throwable {
-		String page_title = driver.getTitle();
-		Assert.assertTrue(page_title.equals("I am another page title - Sauce Labs"));
+		AnotherPage apage = PageFactory.initElements(driver, AnotherPage.class);
+		assertEquals(apage.title, apage.getTitle(driver));
+	}
+
+	@Then("^I should see that comment displayed$")
+	public void comment_displayed() throws Throwable {
+		String commentInputText = "This is a test comment";
+		GuineaPigPage page = PageFactory.initElements(driver, GuineaPigPage.class);
+		assertThat(page.getSubmittedCommentText(), containsString(commentInputText));
 	}
 
 	@After

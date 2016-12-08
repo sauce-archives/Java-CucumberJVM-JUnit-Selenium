@@ -6,7 +6,7 @@ clean_it:
 
 test_parallel:
 	make -j test_windows_10_edge_14 test_windows_10_firefox_49 test_windows_7_ie_11 test_os_x_10_11_safari_10 test_os_x_10_10_chrome_54
-	
+
 test_windows_10_edge_14:
 	browserName=MicrosoftEdge version=14.14393 platform="Windows 10" mvn install
 
