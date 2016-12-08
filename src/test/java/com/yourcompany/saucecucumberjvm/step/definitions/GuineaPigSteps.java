@@ -1,4 +1,4 @@
-package com.yourcompany.saucecucumberjvm;
+package com.yourcompany.saucecucumberjvm.step.definitions;
 
 import cucumber.api.Scenario;
 
@@ -19,7 +19,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.util.concurrent.TimeUnit;
 import java.net.URL;
 
-import Utils.SauceUtils;
+import com.yourcompany.saucecucumberjvm.utils.SauceUtils;
 
 public class GuineaPigSteps {
 

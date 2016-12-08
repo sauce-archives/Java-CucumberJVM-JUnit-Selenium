@@ -10,9 +10,11 @@
   <name>saucecucumberjvm</name>
   <url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <cucumber.jvm.parallel.version>1.0.1</cucumber.jvm.parallel.version>
+        <surefire.maven.plugin.version>2.19.1</surefire.maven.plugin.version>
+    </properties>
 
   <dependencies>
   
@@ -83,15 +85,23 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
-                <configuration>
-                   <forkCount>6</forkCount>
-                   <reuseForks>false</reuseForks>
-                   <includes>
-                   	 <include>**/*AT.class</include>
-                   </includes>
-                   <testFailureIgnore>true</testFailureIgnore>
-                </configuration>
+                <version>${surefire.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>acceptance-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <forkCount>${acceptance.test.parallel.count}</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <includes>
+                                <include>**/*IT.class</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
               <artifactId>maven-resources-plugin</artifactId>
@@ -115,6 +125,43 @@
                   </configuration>            
                 </execution>
               </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.temyers</groupId>
+                <artifactId>cucumber-jvm-parallel-plugin</artifactId>
+                <version>${cucumber.jvm.parallel.version}</version>
+                <executions>
+                    <execution>
+                        <id>generateRunners</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>generateRunners</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Mandatory -->
+                            <!-- comma separated list of package names to scan for glue code -->
+                            <glue>com.yourcompany.saucecucumberjvm.step.definitions</glue>
+                            <!-- These are the default values -->
+                            <!-- Where to output the generated Junit tests -->
+                            <outputDirectory>${project.build.directory}/generated-test-sources/features</outputDirectory>
+                            <!-- The diectory containing your feature files.  -->
+                            <featuresDirectory>src/test/resources/features/</featuresDirectory>
+                            <!-- Directory where the cucumber report files shall be written  -->
+                            <cucumberOutputDir>target/cucumber-parallel</cucumberOutputDir>
+                            <!-- comma separated list of output formats -->
+                            <format>html</format>
+                            <!-- CucumberOptions.strict property -->
+                            <strict>true</strict>
+                            <!-- CucumberOptions.monochrome property -->
+                            <monochrome>true</monochrome>
+                            <!-- The tags to run, maps to CucumberOptions.tags property -->
+                            <tags>"~@ignore"</tags>
+                            <!-- If set to true, only feature files containing the required tags shall be generated. -->
+                            <!-- Excluded tags (~@notMe) are ignored. -->
+                            <filterFeaturesByTags>true</filterFeaturesByTags>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
    </build>
