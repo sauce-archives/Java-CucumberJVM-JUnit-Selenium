@@ -1,4 +1,4 @@
-package com.yourcompany.saucecucumberjvm.utils;
+package com.yourcompany.utils;
 
 import com.saucelabs.saucerest.SauceREST;
 import org.json.JSONException;

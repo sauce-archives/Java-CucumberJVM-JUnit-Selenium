@@ -141,7 +141,7 @@
                         <configuration>
                             <!-- Mandatory -->
                             <!-- comma separated list of package names to scan for glue code -->
-                            <glue>com.yourcompany.saucecucumberjvm.step.definitions</glue>
+                            <glue>com.yourcompany.step.definitions</glue>
                             <!-- These are the default values -->
                             <!-- Where to output the generated Junit tests -->
                             <outputDirectory>${project.build.directory}/generated-test-sources/features</outputDirectory>
