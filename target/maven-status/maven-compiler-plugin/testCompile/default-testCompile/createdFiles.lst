@@ -1,0 +1,5 @@
+Parallel02IT.class
+com/yourcompany/utils/SauceUtils.class
+Parallel01IT.class
+com/yourcompany/Pages/GuineaPigPage.class
+com/yourcompany/step/definitions/GuineaPigSteps.class

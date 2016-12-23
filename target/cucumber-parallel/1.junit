@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><testsuite failures="0" name="cucumber.runtime.formatter.JUnitFormatter" skipped="0" tests="1" time="25.158159">
+<testcase classname="Guinea Pig comment" name="Can submit comment" time="25.158159">
+<system-out><![CDATA[Given I am on the Guinea Pig homepage.......................................passed
+When I submit a comment.....................................................passed
+Then I should see that comment displayed....................................passed
+]]></system-out>
+</testcase>
+</testsuite>
