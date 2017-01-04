@@ -8,16 +8,16 @@ test_parallel:
 	make -j test_windows_10_edge_14 test_windows_10_firefox_49 test_windows_7_ie_11 test_os_x_10_11_safari_10 test_os_x_10_10_chrome_54
 
 test_windows_10_edge_14:
-	browserName=MicrosoftEdge version=14.14393 platform="Windows 10" mvn install
+	mvn install -DbrowserName=MicrosoftEdge -Dversion=14.14393 -Dplatform="Windows 10" -Dsuitename=test_windows_10_edge_14
 
 test_windows_10_firefox_49:
-	browserName=firefox version=49.0 platform="Windows 10" mvn install
+	mvn install -DbrowserName=firefox -Dversion=49.0 -Dplatform="Windows 10" -Dsuitename=test_windows_10_firefox_49
 
 test_windows_7_ie_11:
-	browserName=iexplore version=11.0 platform="Windows 7" mvn install
+	mvn install -DbrowserName=iexplore -Dversion=11.0 -Dplatform="Windows 7" -Dsuitename=test_windows_7_ie_11
 
 test_os_x_10_11_safari_10:
-	browserName=safari version=10.0 platform="OS X 10.11" mvn install
+	mvn install -DbrowserName=safari -Dversion=10.0 -Dplatform="OS X 10.11" -Dsuitename=test_os_x_10_11_safari_10
 
 test_os_x_10_10_chrome_54:
-	browserName=chrome version=54.0 platform="OS X 10.10" mvn install
+	mvn install -DbrowserName=chrome -Dversion=54.0 -Dplatform="OS X 10.10" -Dsuitename=test_os_x_10_10_chrome_54
