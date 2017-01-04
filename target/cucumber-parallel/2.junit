@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testsuite failures="0" name="cucumber.runtime.formatter.JUnitFormatter" skipped="0" tests="1" time="25.137405">
-<testcase classname="Guinea Pig link" name="Can follow link to another page" time="25.137405">
-<system-out><![CDATA[Given I am on the Guinea Pig homepage.......................................passed
-When I click on the link....................................................passed
-Then I should be on another page............................................passed
-]]></system-out>
-</testcase>
-</testsuite>
