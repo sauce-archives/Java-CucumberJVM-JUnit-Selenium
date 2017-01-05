@@ -37,9 +37,9 @@ public class GuineaPigSteps {
 	@Before
 	public void setUp(Scenario scenario) throws Exception {
         DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("platform", System.getenv("platform"));
-        caps.setCapability("browserName", System.getenv("browserName"));
-        caps.setCapability("version", System.getenv("version"));
+        caps.setCapability("platform", System.getProperty("platform"));
+        caps.setCapability("browserName", System.getProperty("browserName"));
+        caps.setCapability("version", System.getProperty("version"));
 
         jobName = scenario.getName();
         caps.setCapability("name", jobName);

@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cucumber.jvm.parallel.version>1.0.1</cucumber.jvm.parallel.version>
+        <cucumber.jvm.parallel.version>2.2.0</cucumber.jvm.parallel.version>
         <surefire.maven.plugin.version>2.19.1</surefire.maven.plugin.version>
         <acceptance.test.parallel.count>10</acceptance.test.parallel.count>
     </properties>
@@ -22,13 +22,13 @@
     <dependency>
       <groupId>info.cukes</groupId>
       <artifactId>cucumber-java</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5</version>
     </dependency>
 
     <dependency>
       <groupId>info.cukes</groupId>
       <artifactId>cucumber-junit</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5</version>
     </dependency>
 
     <dependency>
@@ -47,7 +47,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
 
@@ -141,15 +141,20 @@
                             <!-- The diectory containing your feature files.  -->
                             <featuresDirectory>src/test/resources/features/</featuresDirectory>
                             <!-- Directory where the cucumber report files shall be written  -->
-                            <cucumberOutputDir>target/cucumber-parallel</cucumberOutputDir>
+                            <cucumberOutputDir>${project.build.directory}/cucumber_reports/${suitename}_results</cucumberOutputDir>
                             <!-- comma separated list of output formats -->
-                            <format>html,junit</format>
+                            <format>junit</format>
                             <!-- CucumberOptions.strict property -->
                             <strict>true</strict>
                             <!-- CucumberOptions.monochrome property -->
                             <monochrome>true</monochrome>
                             <!-- The tags to run, maps to CucumberOptions.tags property -->
                             <tags>"~@ignore"</tags>
+
+                            <namingScheme>pattern</namingScheme>
+                            <!-- The class naming pattern to use.  Only required/used if naming scheme is 'pattern'.-->
+                            <namingPattern>{f}_Parallel{c}IT</namingPattern>
+
                             <!-- If set to true, only feature files containing the required tags shall be generated. -->
                             <!-- Excluded tags (~@notMe) are ignored. -->
                             <filterFeaturesByTags>true</filterFeaturesByTags>
