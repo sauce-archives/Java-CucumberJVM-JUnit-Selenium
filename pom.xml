@@ -1,79 +1,76 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.yourcompany</groupId>
-  <artifactId>saucecucumberjvm</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>com.yourcompany</groupId>
+    <artifactId>saucecucumberjvm</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-  <name>saucecucumberjvm</name>
-  <url>http://maven.apache.org</url>
+    <name>saucecucumberjvm</name>
+    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cucumber.jvm.parallel.version>2.2.0</cucumber.jvm.parallel.version>
-        <surefire.maven.plugin.version>2.19.1</surefire.maven.plugin.version>
-        <acceptance.test.parallel.count>10</acceptance.test.parallel.count>
+        <cucumber.jvm.parallel.version>5.0.0</cucumber.jvm.parallel.version>
     </properties>
 
-  <dependencies>
+    <dependencies>
 
-      <dependency>
-          <groupId>org.yaml</groupId>
-          <artifactId>snakeyaml</artifactId>
-          <version>1.17</version>
-          <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.17</version>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-      <groupId>info.cukes</groupId>
-      <artifactId>cucumber-java</artifactId>
-      <version>1.2.5</version>
-    </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>1.2.5</version>
+        </dependency>
 
-    <dependency>
-      <groupId>info.cukes</groupId>
-      <artifactId>cucumber-junit</artifactId>
-      <version>1.2.5</version>
-    </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>1.2.5</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-java</artifactId>
-      <version>2.53.1</version>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>3.4.0</version>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-		<groupId>com.saucelabs</groupId>
-		<artifactId>saucerest</artifactId>
-		<version>1.0.23</version>
-	</dependency>
+        <dependency>
+            <groupId>com.saucelabs</groupId>
+            <artifactId>saucerest</artifactId>
+            <version>1.0.23</version>
+        </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>1.3.2</version>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
 
-    <dependency>
-      <groupId>com.saucelabs</groupId>
-      <artifactId>sauce_junit</artifactId>
-      <version>2.1.18</version>
-      <scope>test</scope>
-	</dependency>
+        <dependency>
+            <groupId>com.saucelabs</groupId>
+            <artifactId>sauce_junit</artifactId>
+            <version>2.1.18</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-  </dependencies>
-
-   <build>
+    <build>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -85,47 +82,43 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.maven.plugin.version}</version>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.21.0</version>
+                <configuration>
+                    <parallel>methods</parallel>
+                    <threadCount>8</threadCount>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>acceptance-test</id>
-                        <phase>integration-test</phase>
                         <goals>
-                            <goal>test</goal>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
                         </goals>
-                        <configuration>
-                            <forkCount>${acceptance.test.parallel.count}</forkCount>
-                            <reuseForks>true</reuseForks>
-                            <includes>
-                                <include>**/*IT.class</include>
-                            </includes>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-              <artifactId>maven-resources-plugin</artifactId>
-              <version>2.7</version>
-              <executions>
-                <execution>
-                  <id>copy-resources</id>
-                  <!-- here the phase you need -->
-                  <phase>validate</phase>
-                  <goals>
-                    <goal>copy-resources</goal>
-                  </goals>
-                  <configuration>
-                    <outputDirectory>target/test-classes/com/yourcompany/saucecucumberjvm</outputDirectory>
-                    <resources>
-                      <resource>
-                        <directory>src/test/resources</directory>
-                        <filtering>true</filtering>
-                      </resource>
-                    </resources>
-                  </configuration>
-                </execution>
-              </executions>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <!-- here the phase you need -->
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/test-classes/com/yourcompany/saucecucumberjvm</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.github.temyers</groupId>
@@ -144,11 +137,13 @@
                             <glue>com.yourcompany.step.definitions</glue>
                             <!-- These are the default values -->
                             <!-- Where to output the generated Junit tests -->
-                            <outputDirectory>${project.build.directory}/generated-test-sources/features</outputDirectory>
+                            <outputDirectory>${project.build.directory}/generated-test-sources/features
+                            </outputDirectory>
                             <!-- The diectory containing your feature files.  -->
                             <featuresDirectory>src/test/resources/features/</featuresDirectory>
                             <!-- Directory where the cucumber report files shall be written  -->
-                            <cucumberOutputDir>${project.build.directory}/cucumber_reports/${suitename}_results</cucumberOutputDir>
+                            <cucumberOutputDir>${project.build.directory}/cucumber_reports/${suitename}_results
+                            </cucumberOutputDir>
                             <!-- comma separated list of output formats -->
                             <format>junit</format>
                             <!-- CucumberOptions.strict property -->
@@ -156,7 +151,9 @@
                             <!-- CucumberOptions.monochrome property -->
                             <monochrome>true</monochrome>
                             <!-- The tags to run, maps to CucumberOptions.tags property -->
-                            <tags>"~@ignore"</tags>
+                            <tags>
+                                <tag>~@ignore</tag>
+                            </tags>
 
                             <namingScheme>pattern</namingScheme>
                             <!-- The class naming pattern to use.  Only required/used if naming scheme is 'pattern'.-->
@@ -170,6 +167,6 @@
                 </executions>
             </plugin>
         </plugins>
-   </build>
+    </build>
 
 </project>
