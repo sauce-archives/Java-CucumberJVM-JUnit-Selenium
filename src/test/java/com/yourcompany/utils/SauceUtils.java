@@ -2,10 +2,14 @@ package com.yourcompany.utils;
 
 import com.saucelabs.saucerest.SauceREST;
 import org.json.JSONException;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by mehmetgerceker on 6/13/16.
@@ -14,7 +18,7 @@ public class SauceUtils {
 
     private static SauceREST sauceRESTClient;
 
-    private static SauceREST getSauceRestClient(String username, String accessKey){
+    private static SauceREST getSauceRestClient(String username, String accessKey) {
         if (sauceRESTClient == null) {
             sauceRESTClient = new SauceREST(username, accessKey);
         }
@@ -25,60 +29,56 @@ public class SauceUtils {
             throws JSONException, IOException {
         SauceREST client = getSauceRestClient(username, accessKey);
         Map<String, Object> updates = new HashMap<String, Object>();
-        addBuildNumberToUpdate(updates);
         updates.put("passed", testResults);
         client.updateJobInfo(sessionId, updates);
     }
+
+    public static DesiredCapabilities createCapabilities(String value) throws FileNotFoundException {
+        FileReader file = new FileReader("src/test/java/com/yourcompany/utils/platforms.yml");
+        Map<String, Object> platforms = (Map<String, Object>) new Yaml().load(file);
+        Map<String, Object> platform = (Map<String, Object>) platforms.get(value);
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        for (String key : platform.keySet()) {
+            capabilities.setCapability(key, platform.get(key));
+        }
+        return capabilities;
+    }
+
     /**
      * Populates the <code>updates</code> map with the value of the system property/environment variable
      * with the following name:
      * <ol>
-     *     <li>SAUCE_BAMBOO_BUILDNUMBER</li>
-     *     <li>JENKINS_BUILD_NUMBER</li>
-     *     <li>BUILD_TAG</li>
-     *     <li>BUILD_NUMBER</li>
-     *     <li>TRAVIS_BUILD_NUMBER</li>
-     *     <li>CIRCLE_BUILD_NUM</li>
+     * <li>SAUCE_BAMBOO_BUILDNUMBER</li>
+     * <li>JENKINS_BUILD_NUMBER</li>
+     * <li>BUILD_TAG</li>
+     * <li>BUILD_NUMBER</li>
+     * <li>TRAVIS_BUILD_NUMBER</li>
+     * <li>CIRCLE_BUILD_NUM</li>
      * </ol>
-     * @param updates String,Object pair containing job updates
      */
-    private static void addBuildNumberToUpdate(Map<String, Object> updates) {
-        //try Bamboo
-        String buildNumber = readPropertyOrEnv("SAUCE_BAMBOO_BUILDNUMBER", null);
-        if (buildNumber == null || buildNumber.equals("")) {
-            //try Jenkins
-            buildNumber = readPropertyOrEnv("JENKINS_BUILD_NUMBER", null);
-        }
+    public static String getBuildName() {
+        List<String> variables = Arrays.asList("SAUCE_BAMBOO_BUILDNUMBER",
+                "JENKINS_BUILD_NUMBER",
+                "CIRCLE_BUILD_NUM",
+                "BUILD_TAG",
+                "BUILD_NUMBER",
+                "TRAVIS_BUILD_NUMBER");
 
-        if (buildNumber == null || buildNumber.equals("")) {
-            //try BUILD_TAG
-            buildNumber = readPropertyOrEnv("BUILD_TAG", null);
+        for (String variable : variables) {
+            String buildName = readPropertyOrEnv(variable);
+            if (buildName != null && !buildName.equals("")) {
+                return buildName;
+            }
         }
-
-        if (buildNumber == null || buildNumber.equals("")) {
-            //try BUILD_NUMBER
-            buildNumber = readPropertyOrEnv("BUILD_NUMBER", null);
-        }
-        if (buildNumber == null || buildNumber.equals("")) {
-            //try TRAVIS_BUILD_NUMBER
-            buildNumber = readPropertyOrEnv("TRAVIS_BUILD_NUMBER", null);
-        }
-        if (buildNumber == null || buildNumber.equals("")) {
-            //try CIRCLE_BUILD_NUM
-            buildNumber = readPropertyOrEnv("CIRCLE_BUILD_NUM", null);
-        }
-
-        if (buildNumber != null && !(buildNumber.equals(""))) {
-            updates.put("build", buildNumber);
-        }
-
+        return new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
     }
-    private static String readPropertyOrEnv(String key, String defaultValue) {
+
+    private static String readPropertyOrEnv(String key) {
         String v = System.getProperty(key);
-        if (v == null)
-            v = System.getenv(key);
-        if (v == null)
-            v = defaultValue;
-        return v;
+        if (v == null) {
+            return System.getenv(key);
+        } else {
+            return v;
+        }
     }
 }

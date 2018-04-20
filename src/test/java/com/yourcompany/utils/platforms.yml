@@ -1,0 +1,12 @@
+windows_10_edge:
+  platform: Windows 10
+  browserName: MicrosoftEdge
+  version: '14.14393'
+windows_8_ie:
+  platform: Windows 8
+  browserName: Internet Explorer
+  version: '11.0'
+mac_high_sierra_chrome:
+  platform: OS X 10.13
+  browserName: chrome
+  version: '65.0'
