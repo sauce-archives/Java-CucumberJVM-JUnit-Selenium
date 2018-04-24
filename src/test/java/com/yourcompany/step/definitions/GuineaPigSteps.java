@@ -25,61 +25,59 @@ import static org.hamcrest.CoreMatchers.containsString;
 
 public class GuineaPigSteps {
 
-	public static final String USERNAME = System.getenv("SAUCE_USERNAME");
-	public static final String ACCESS_KEY = System.getenv("SAUCE_ACCESS_KEY");
-	public static final String URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@ondemand.saucelabs.com:443/wd/hub";
-	public static WebDriver driver;
-	public static GuineaPigPage page;
-	public String commentInputText;
-	public String sessionId;
-	public String jobName;
+    public static final String USERNAME = System.getenv("SAUCE_USERNAME");
+    public static final String ACCESS_KEY = System.getenv("SAUCE_ACCESS_KEY");
+    public static final String URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@ondemand.saucelabs.com:443/wd/hub";
+    public static WebDriver driver;
+    public static GuineaPigPage page;
+    public String commentInputText;
+    public String sessionId;
 
-	@Before
-	public void setUp(Scenario scenario) throws Exception {
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("platform", System.getProperty("platform"));
-        caps.setCapability("browserName", System.getProperty("browserName"));
-        caps.setCapability("version", System.getProperty("version"));
+    @Before
+    public void setUp(Scenario scenario) throws Exception {
+        String platformProperty = System.getenv("PLATFORM");
 
-        jobName = scenario.getName();
-        caps.setCapability("name", jobName);
+		String platform = (platformProperty != null) ? platformProperty : "windows_10_edge";
 
-	    driver = new RemoteWebDriver(new URL(URL), caps);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        DesiredCapabilities caps = SauceUtils.createCapabilities(platform);
+
+        caps.setCapability("name", scenario.getName());
+        caps.setCapability("build", SauceUtils.getBuildName());
+
+        driver = new RemoteWebDriver(new URL(URL), caps);
 
         sessionId = (((RemoteWebDriver) driver).getSessionId()).toString();
-	}
+    }
 
-	@Given("^I am on the Guinea Pig homepage$")
-	public void user_is_on_guinea_pig_page() throws Exception {
-		page = GuineaPigPage.visitPage(driver);
-	}
+    @Given("^I am on the Guinea Pig homepage$")
+    public void user_is_on_guinea_pig_page() throws Exception {
+        page = GuineaPigPage.visitPage(driver);
+    }
 
-	@When("^I click on the link$")
-	public void user_click_on_the_link() throws Exception {
-		page.followLink();
-	}
+    @When("^I click on the link$")
+    public void user_click_on_the_link() throws Exception {
+        page.followLink();
+    }
 
-	@When("^I submit a comment$")
-	public void user_submit_comment() throws Exception {
-		commentInputText = UUID.randomUUID().toString();
-		page.submitComment(commentInputText);
-	}
+    @When("^I submit a comment$")
+    public void user_submit_comment() throws Exception {
+        commentInputText = UUID.randomUUID().toString();
+        page.submitComment(commentInputText);
+    }
 
-	@Then("^I should be on another page$")
-	public void new_page_displayed() throws Exception {
-		assertFalse(page.isOnPage());
-	}
+    @Then("^I should be on another page$")
+    public void new_page_displayed() throws Exception {
+        assertFalse(page.isOnPage());
+    }
 
-	@Then("^I should see that comment displayed$")
-	public void comment_displayed() throws Exception {
-		assertThat(page.getSubmittedCommentText(), containsString(commentInputText));
-	}
+    @Then("^I should see that comment displayed$")
+    public void comment_displayed() throws Exception {
+        assertThat(page.getSubmittedCommentText(), containsString(commentInputText));
+    }
 
-	@After
-	public void tearDown(Scenario scenario) throws Exception {
-		driver.quit();
-		SauceUtils.UpdateResults(USERNAME, ACCESS_KEY, !scenario.isFailed(), sessionId);
-		System.out.println("SauceOnDemandSessionID="+ sessionId + "job-name="+ jobName);
-	}
+    @After
+    public void tearDown(Scenario scenario) throws Exception {
+        driver.quit();
+        SauceUtils.UpdateResults(USERNAME, ACCESS_KEY, !scenario.isFailed(), sessionId);
+    }
 }
