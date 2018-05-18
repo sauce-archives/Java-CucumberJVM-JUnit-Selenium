@@ -8,13 +8,13 @@ test_parallel:
 	make -j windows_10_edge windows_8_ie mac_sierra_chrome windows_7_ff
 
 windows_10_edge:
-	PLATFORM=windows_10_edge mvn install
+	mvn install -Dplatform=windows_10_edge
 
 windows_8_ie:
-	PLATFORM=windows_8_ie mvn install
+	mvn install -Dplatform=windows_8_ie
 
 mac_sierra_chrome:
-	PLATFORM=mac_sierra_chrome mvn install
+	mvn install -Dplatform=mac_sierra_chrome
 
 windows_7_ff:
-	PLATFORM=windows_7_ff mvn install
+	mvn install -Dplatform=windows_7_ff

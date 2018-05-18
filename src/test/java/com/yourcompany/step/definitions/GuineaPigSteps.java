@@ -35,7 +35,7 @@ public class GuineaPigSteps {
 
     @Before
     public void setUp(Scenario scenario) throws Exception {
-        String platformProperty = System.getenv("PLATFORM");
+        String platformProperty = System.getProperty("platform");
 
 		String platform = (platformProperty != null) ? platformProperty : "windows_10_edge";
 
