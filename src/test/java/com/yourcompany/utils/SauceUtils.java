@@ -34,14 +34,18 @@ public class SauceUtils {
     }
 
     public static DesiredCapabilities createCapabilities(String value) throws FileNotFoundException {
-        FileReader file = new FileReader("src/test/java/com/yourcompany/utils/platforms.yml");
-        Map<String, Object> platforms = (Map<String, Object>) new Yaml().load(file);
-        Map<String, Object> platform = (Map<String, Object>) platforms.get(value);
+        Map<String, Object> platform = parseYAML("src/test/java/com/yourcompany/utils/platforms.yml", value);
         DesiredCapabilities capabilities = new DesiredCapabilities();
         for (String key : platform.keySet()) {
             capabilities.setCapability(key, platform.get(key));
         }
         return capabilities;
+    }
+
+    private static Map<String, Object> parseYAML(String filename, String parameter) throws FileNotFoundException {
+        FileReader file = new FileReader(filename);
+        Map<String, Object> platforms = (Map<String, Object>) new Yaml().load(file);
+        return (Map<String, Object>) platforms.get(parameter);
     }
 
     /**
