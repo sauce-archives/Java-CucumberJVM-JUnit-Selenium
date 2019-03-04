@@ -1,0 +1,31 @@
+package io.cucumber;
+
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import org.junit.Assert;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class StepDefinitions {
+
+    WebDriver driver;
+    final String BASE_URL = "https://www.saucedemo.com";
+
+    @Before
+    public void setUp(){
+        driver = new FirefoxDriver();
+    }
+
+    @After
+    public void tearDown(){
+        driver.quit();
+    }
+
+    @Given("^I go to the login page$")
+    public void go_to_login_page() {
+        driver.get(BASE_URL);
+    }
+}
