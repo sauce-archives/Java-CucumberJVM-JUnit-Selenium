@@ -29,8 +29,10 @@ This code is provided on an "AS-IS” basis without warranty of any kind, either
     ```
     
 ### Running the tests
+This set of tests makes use of the [parallel feature](https://cucumber.io/blog/announcing-cucumber-jvm-4-0-0/) in Cucumber 4.0.0. Using Maven with
+the `sure-fire` plugin allows tests to be run in parallel by feature file. Each scenario in each feature file will be executed on a Sauce session. 
 ```
-$ make run_all_in_parallel
+$ mvn clean install test
 ```
 
 [Sauce Labs Dashboard](https://saucelabs.com/beta/dashboard/)
