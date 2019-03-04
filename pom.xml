@@ -164,8 +164,6 @@
                             <namingPattern>{f}_Parallel{c}IT_${platform}</namingPattern>
 
                             <!-- If set to true, only feature files containing the required tags shall be generated. -->
-                            <!-- Excluded tags (~@notMe) are ignored. -->
-                            <filterFeaturesByTags>true</filterFeaturesByTags>
                         </configuration>
                     </execution>
                 </executions>
