@@ -1,5 +1,6 @@
 package io.cucumber;
 
+import com.saucelabs.saucerest.SauceREST;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -17,19 +18,20 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.Remote;
+import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 public class StepDefinitions {
+    private WebDriver driver;
+    private String sessionId;
+    private WebDriverWait wait;
 
-    WebDriver driver;
-    String sessionId;
-    WebDriverWait wait;
+    private final String username = System.getenv("SAUCE_USERNAME");
+    private final String accesskey = System.getenv("SAUCE_ACCESS_KEY");
 
-    final String username = System.getenv("SAUCE_USERNAME");
-    final String accesskey = System.getenv("SAUCE_ACCESS_KEY");
-
-    final String BASE_URL = "https://www.saucedemo.com";
-    final String SAUCE_REMOTE_URL = "https://ondemand.saucelabs.com/wd/hub";
+    private final String BASE_URL = "https://www.saucedemo.com";
+    private final String SAUCE_REMOTE_URL = "https://ondemand.saucelabs.com/wd/hub";
+    private SauceUtils sauceUtils;
 
     @Before
     public void setUp(Scenario scenario) throws MalformedURLException {
@@ -44,13 +46,15 @@ public class StepDefinitions {
         driver = new RemoteWebDriver(new URL(SAUCE_REMOTE_URL), caps);
         sessionId = ((RemoteWebDriver)driver).getSessionId().toString();
         wait = new WebDriverWait(driver, 10);
+
+        SauceREST sauceREST = new SauceREST(username, accesskey);
+        sauceUtils = new SauceUtils(sauceREST);
     }
 
     @After
     public void tearDown(Scenario scenario){
         driver.quit();
-        SauceUtils.UpdateResults(username, accesskey, !scenario.isFailed(), sessionId);
-
+        sauceUtils.updateResults(!scenario.isFailed(), sessionId);
     }
 
     @Given("^I go to the login page$")
@@ -89,10 +93,10 @@ public class StepDefinitions {
     public void add_items_to_cart(int items){
         By itemButton = By.className("add-to-cart-button");
 
-        for (int i = 0; i < items; i++){
+        IntStream.range(0, items).forEach(i -> {
             wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(itemButton)));
             driver.findElement(itemButton).click();
-        }
+        });
     }
 
     @And("I remove an item")

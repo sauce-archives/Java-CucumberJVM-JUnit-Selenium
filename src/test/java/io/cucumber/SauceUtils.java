@@ -8,21 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SauceUtils {
+    /**
+     * A singleton instance of the Sauce REST client
+     */
+    private SauceREST sauceRESTClient;
 
-        private static SauceREST sauceRESTClient;
+    public SauceUtils(SauceREST sauceREST) {
+        this.sauceRESTClient = sauceREST;
+    }
 
-        private static SauceREST getSauceRestClient(String username, String accessKey) {
-            if (sauceRESTClient == null) {
-                sauceRESTClient = new SauceREST(username, accessKey);
-            }
-            return sauceRESTClient;
-        }
-
-        public static void UpdateResults(String username, String accessKey, boolean testResults, String sessionId)
-                throws JSONException {
-            SauceREST client = getSauceRestClient(username, accessKey);
-            Map<String, Object> updates = new HashMap<String, Object>();
-            updates.put("passed", testResults);
-            client.updateJobInfo(sessionId, updates);
-        }
+    void updateResults(boolean testResults, String sessionId)
+            throws JSONException {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("passed", testResults);
+        sauceRESTClient.updateJobInfo(sessionId, updates);
+    }
 }
