@@ -26,33 +26,43 @@ public class StepDefinitions {
     private String sessionId;
     private WebDriverWait wait;
 
-    private final String username = System.getenv("SAUCE_USERNAME");
-    private final String accesskey = System.getenv("SAUCE_ACCESS_KEY");
+    private String username;
+    private String accesskey;
 
     private final String BASE_URL = "https://www.saucedemo.com";
-    private final String SAUCE_REMOTE_URL = "https://ondemand.saucelabs.com/wd/hub";
     private SauceUtils sauceUtils;
 
     @Before
     public void setUp(Scenario scenario) throws MalformedURLException {
+        //Set up the ChromeOptions object, which will store the capabilities for the Sauce run
         ChromeOptions caps = new ChromeOptions();
         caps.setCapability("version", "72.0");
         caps.setCapability("platform", "Windows 10");
         caps.setExperimentalOption("w3c", true);
 
+        //Create a map of capabilities called "sauce:options", which contain the info necessary to run on Sauce
+        // Labs, using the credentials stored in the environment variables. Also runs using the new W3C standard.
         MutableCapabilities sauceOptions = new MutableCapabilities();
         sauceOptions.setCapability("username", username);
         sauceOptions.setCapability("accessKey", accesskey);
         sauceOptions.setCapability("seleniumVersion", "3.141.59");
         sauceOptions.setCapability("name", scenario.getName());
 
+        //Assign the Sauce Options to the base capabilities
         caps.setCapability("sauce:options", sauceOptions);
 
+        //Create a new RemoteWebDriver, which will initialize the test execution on Sauce Labs servers
+        String SAUCE_REMOTE_URL = "https://ondemand.saucelabs.com/wd/hub";
         driver = new RemoteWebDriver(new URL(SAUCE_REMOTE_URL), caps);
         sessionId = ((RemoteWebDriver)driver).getSessionId().toString();
         wait = new WebDriverWait(driver, 10);
 
-        //null check for env
+        username = System.getenv("SAUCE_USERNAME");
+        accesskey = System.getenv("SAUCE_ACCESS_KEY");
+        if (username == null || username.isEmpty() || accesskey == null || accesskey.isEmpty()) {
+            throw new RuntimeException("Error with Sauce Labs credentials: either SAUCE_USERNAME or SAUCE_ACCESS_KEY environment variable was not set");
+        }
+
         SauceREST sauceREST = new SauceREST(username, accesskey);
         sauceUtils = new SauceUtils(sauceREST);
     }
