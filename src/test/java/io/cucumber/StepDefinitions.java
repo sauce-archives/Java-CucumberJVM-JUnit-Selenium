@@ -26,8 +26,8 @@ public class StepDefinitions {
     private String sessionId;
     private WebDriverWait wait;
 
-    private String username;
-    private String accesskey;
+    private String username = System.getenv("SAUCE_USERNAME");
+    private String accesskey = System.getenv("SAUCE_ACCESS_KEY");
 
     private final String BASE_URL = "https://www.saucedemo.com";
     private SauceUtils sauceUtils;
@@ -56,12 +56,6 @@ public class StepDefinitions {
         driver = new RemoteWebDriver(new URL(SAUCE_REMOTE_URL), caps);
         sessionId = ((RemoteWebDriver)driver).getSessionId().toString();
         wait = new WebDriverWait(driver, 10);
-
-        username = System.getenv("SAUCE_USERNAME");
-        accesskey = System.getenv("SAUCE_ACCESS_KEY");
-        if (username == null || username.isEmpty() || accesskey == null || accesskey.isEmpty()) {
-            throw new RuntimeException("Error with Sauce Labs credentials: either SAUCE_USERNAME or SAUCE_ACCESS_KEY environment variable was not set");
-        }
 
         SauceREST sauceREST = new SauceREST(username, accesskey);
         sauceUtils = new SauceUtils(sauceREST);
