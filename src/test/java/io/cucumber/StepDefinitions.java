@@ -10,15 +10,15 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 public class StepDefinitions {
@@ -35,18 +35,24 @@ public class StepDefinitions {
 
     @Before
     public void setUp(Scenario scenario) throws MalformedURLException {
-        DesiredCapabilities caps = DesiredCapabilities.firefox();
-
-        caps.setCapability("version", "60.0");
+        ChromeOptions caps = new ChromeOptions();
+        caps.setCapability("version", "72.0");
         caps.setCapability("platform", "Windows 10");
-        caps.setCapability("username", username);
-        caps.setCapability("accessKey", accesskey);
-        caps.setCapability("name", scenario.getName());
+        caps.setExperimentalOption("w3c", true);
+
+        MutableCapabilities sauceOptions = new MutableCapabilities();
+        sauceOptions.setCapability("username", username);
+        sauceOptions.setCapability("accessKey", accesskey);
+        sauceOptions.setCapability("seleniumVersion", "3.141.59");
+        sauceOptions.setCapability("name", scenario.getName());
+
+        caps.setCapability("sauce:options", sauceOptions);
 
         driver = new RemoteWebDriver(new URL(SAUCE_REMOTE_URL), caps);
         sessionId = ((RemoteWebDriver)driver).getSessionId().toString();
         wait = new WebDriverWait(driver, 10);
 
+        //null check for env
         SauceREST sauceREST = new SauceREST(username, accesskey);
         sauceUtils = new SauceUtils(sauceREST);
     }
@@ -69,22 +75,26 @@ public class StepDefinitions {
 
     @When("I login as a valid user")
     public void login_as_valid_user() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("user-name")));
-        driver.findElement(By.id("user-name")).sendKeys("standard_user");
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
-        driver.findElement(By.id("password")).sendKeys("secret_sauce");
-
-        driver.findElement(By.className("login-button")).click();
+        login("standard_user", "secret_sauce");
     }
 
     @When("I login as an invalid user")
     public void login_as_invalid_user() {
+        login("doesnt_exist", "secret_sauce");
+    }
+
+    /**
+     * Use this method to send any number of login/password parameters, to test different edge cases or roles within
+     * the software. This method exists to show an example of how steps can call other parameterized methods.
+     * @param username The user name to login with
+     * @param password The password to use (for testing the password field
+     */
+    private void login(String username, String password) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("user-name")));
-        driver.findElement(By.id("user-name")).sendKeys("doesnt_exist");
+        driver.findElement(By.id("user-name")).sendKeys(username);
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
-        driver.findElement(By.id("password")).sendKeys("secret_sauce");
+        driver.findElement(By.id("password")).sendKeys(password);
 
         driver.findElement(By.className("login-button")).click();
     }
