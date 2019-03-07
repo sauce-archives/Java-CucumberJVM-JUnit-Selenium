@@ -37,6 +37,12 @@
             <artifactId>saucerest</artifactId>
             <version>1.0.39</version>
         </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
