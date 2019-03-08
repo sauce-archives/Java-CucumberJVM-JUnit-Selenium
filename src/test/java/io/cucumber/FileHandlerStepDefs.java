@@ -3,6 +3,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.restassured.response.Response;
+import org.junit.Assert;
 
 import static io.restassured.RestAssured.get;
 
@@ -24,5 +25,11 @@ public class FileHandlerStepDefs
     @Then("The file is successfully downloaded")
     public void theFileIsSuccessfullyDownloaded() {
         webResponse.then().statusCode(200);
+    }
+
+    @Then("The file is the correct type")
+    public void theFileIsTheCorrectType()
+    {
+        Assert.assertTrue(webResponse.getHeader("Content-Disposition").contains("xpath.xlsx"));
     }
 }
