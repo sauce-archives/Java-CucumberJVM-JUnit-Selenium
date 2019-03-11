@@ -9,17 +9,18 @@ import static io.restassured.RestAssured.get;
 
 public class FileHandlerStepDefs
 {
-    private String excelFilePath;
+    private String filePath;
     private Response webResponse;
 
-    @Given("I have an Excel File")
-    public void iHaveAnExcelFile() {
-        excelFilePath = "https://the-internet.herokuapp.com/download/xpath.xlsx";
+    @Given("I have a File")
+    public void iHaveAFile() {
+        filePath = "https://the-internet.herokuapp.com/download/some-file.txt";
+        TestContext.isApiTest = true;
     }
 
     @When("I download the file")
     public void iDownloadTheFile() {
-        webResponse = get(excelFilePath);
+        webResponse = get(filePath);
     }
 
     @Then("The file is successfully downloaded")
@@ -30,6 +31,6 @@ public class FileHandlerStepDefs
     @Then("The file is the correct type")
     public void theFileIsTheCorrectType()
     {
-        Assert.assertTrue(webResponse.getHeader("Content-Disposition").contains("xpath.xlsx"));
+        Assert.assertTrue(webResponse.getHeader("Content-Disposition").contains("some-file.txt"));
     }
 }
