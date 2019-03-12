@@ -1,3 +1,4 @@
+@api
 Feature: File upload and download
 
   Scenario: Download file
