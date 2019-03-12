@@ -15,7 +15,6 @@ public class FileHandlerStepDefs
     @Given("I have a File")
     public void iHaveAFile() {
         filePath = "https://the-internet.herokuapp.com/download/some-file.txt";
-        TestContext.isApiTest = true;
     }
 
     @When("I download the file")
