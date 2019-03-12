@@ -48,4 +48,11 @@ public class FileHandlerStepDefs
     public void theFileUploadProcessFails() {
         webResponse.then().statusCode(500);
     }
+
+
+
+    @Then("The file upload process works")
+    public void theFileUploadProcessWorks() {
+        post("https://the-internet.herokuapp.com/upload").then().statusCode(200);
+    }
 }

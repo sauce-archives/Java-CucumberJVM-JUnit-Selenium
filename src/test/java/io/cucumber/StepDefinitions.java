@@ -17,6 +17,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.stream.IntStream;
@@ -141,5 +143,15 @@ public class StepDefinitions {
     @Then("The item list is displayed")
     public void item_list_is_diplayed() {
         Assert.assertTrue(driver.findElement(By.id("inventory_container")).isDisplayed());
+    }
+    @Given("I have attached a file")
+    public void iHaveAttachedAFile() throws IOException {
+        File file = new File("c:\\text.txt");
+        boolean created = file.createNewFile();
+        if(created){
+            driver.navigate().to("http://the-internet.herokuapp.com/upload");
+            driver.findElement(By.id("file-upload")).sendKeys(file.getAbsolutePath());
+            file.delete();
+        }
     }
 }
