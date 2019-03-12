@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import org.junit.Assert;
 
 import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.post;
 
 public class FileHandlerStepDefs
 {
@@ -31,5 +32,20 @@ public class FileHandlerStepDefs
     public void theFileIsTheCorrectType()
     {
         Assert.assertTrue(webResponse.getHeader("Content-Disposition").contains("some-file.txt"));
+    }
+
+    @Given("I have not attached any file")
+    public void iHaveNotAttachedAnyFile() {
+        //do nothing
+    }
+
+    @When("I upload the file")
+    public void iUploadTheFile() {
+        webResponse = post("https://the-internet.herokuapp.com/upload");
+    }
+
+    @Then("The file upload process fails")
+    public void theFileUploadProcessFails() {
+        webResponse.then().statusCode(500);
     }
 }

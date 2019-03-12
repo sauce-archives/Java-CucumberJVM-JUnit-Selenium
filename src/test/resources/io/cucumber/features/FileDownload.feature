@@ -1,5 +1,5 @@
 @api
-Feature: File upload and download
+Feature: File download
 
   Scenario: Download file
     Given I have a File
