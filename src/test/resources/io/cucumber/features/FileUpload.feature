@@ -6,9 +6,3 @@ Feature: File upload
     Given I have not attached any file
     When I upload the file
     Then The file upload process fails
-
-  @ui
-  Scenario: Uploading a file is possible
-    Given I have attached a file
-    When I upload the file
-    Then The file upload process works

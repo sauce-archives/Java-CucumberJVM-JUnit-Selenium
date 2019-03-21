@@ -13,8 +13,8 @@ public class FileHandlerStepDefs
     private String filePath;
     private Response webResponse;
 
-    @Given("I have a File")
-    public void iHaveAFile() {
+    @Given("I have access to a URL that points to my file")
+    public void iHaveAccessToAURLThatPointsToMyFile() {
         filePath = "https://the-internet.herokuapp.com/download/some-file.txt";
     }
 
@@ -55,4 +55,6 @@ public class FileHandlerStepDefs
     public void theFileUploadProcessWorks() {
         post("https://the-internet.herokuapp.com/upload").then().statusCode(200);
     }
+
+
 }
