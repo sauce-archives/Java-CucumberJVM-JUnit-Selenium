@@ -100,12 +100,12 @@ public class StepDefinitions {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
         driver.findElement(By.id("password")).sendKeys(password);
 
-        driver.findElement(By.className("login-button")).click();
+        driver.findElement(By.className("btn_action")).click();
     }
 
     @When("^I add (\\d+) items? to the cart$")
     public void add_items_to_cart(int items){
-        By itemButton = By.className("add-to-cart-button");
+        By itemButton = By.className("btn_primary");
 
         IntStream.range(0, items).forEach(i -> {
             wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(itemButton)));
@@ -115,7 +115,7 @@ public class StepDefinitions {
 
     @And("I remove an item")
     public void remove_an_item(){
-        By itemButton = By.className("remove-from-cart-button");
+        By itemButton = By.className("btn_secondary");
 
         wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(itemButton)));
         driver.findElement(itemButton).click();
