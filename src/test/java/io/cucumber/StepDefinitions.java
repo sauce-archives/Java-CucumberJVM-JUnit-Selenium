@@ -21,6 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.stream.IntStream;
 
+
+
 public class StepDefinitions {
     private WebDriver driver;
     private String sessionId;
@@ -32,7 +34,7 @@ public class StepDefinitions {
     private final String BASE_URL = "https://www.saucedemo.com";
     private SauceUtils sauceUtils;
 
-    @Before
+    @Before("not @api")
     public void setUp(Scenario scenario) throws MalformedURLException {
         //Set up the ChromeOptions object, which will store the capabilities for the Sauce run
         ChromeOptions caps = new ChromeOptions();
@@ -61,7 +63,7 @@ public class StepDefinitions {
         sauceUtils = new SauceUtils(sauceREST);
     }
 
-    @After
+    @After("not @api")
     public void tearDown(Scenario scenario){
         driver.quit();
         sauceUtils.updateResults(!scenario.isFailed(), sessionId);
