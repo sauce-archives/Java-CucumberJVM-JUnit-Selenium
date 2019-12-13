@@ -17,6 +17,12 @@ This code is provided on an "AS-IS” basis without warranty of any kind, either
     $ export SAUCE_USERNAME=<your Sauce Labs username>
     $ export SAUCE_ACCESS_KEY=<your Sauce Labs access key>
     ```
+    For testing against Sauce Labs' EU datacenter, please add:
+    ```
+    $ export SAUCE_ENDPOINT=ondemand.eu-central-1.saucelabs.com
+    $ export SAUCE_REST_ENDPOINT=https://eu-central-1.saucelabs.com/rest
+    ```
+   
 3. Project Dependencies
     * Check that packages are available
     ```

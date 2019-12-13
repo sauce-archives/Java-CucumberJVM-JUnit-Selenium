@@ -28,6 +28,7 @@ public class StepDefinitions {
 
     private String username = System.getenv("SAUCE_USERNAME");
     private String accesskey = System.getenv("SAUCE_ACCESS_KEY");
+    private String SAUCE_REMOTE_URL = System.getenv("SAUCE_ENDPOINT");
 
     private final String BASE_URL = "https://www.saucedemo.com";
     private SauceUtils sauceUtils;
@@ -52,8 +53,10 @@ public class StepDefinitions {
         caps.setCapability("sauce:options", sauceOptions);
 
         //Create a new RemoteWebDriver, which will initialize the test execution on Sauce Labs servers
-        String SAUCE_REMOTE_URL = "https://ondemand.saucelabs.com/wd/hub";
-        driver = new RemoteWebDriver(new URL(SAUCE_REMOTE_URL), caps);
+        if (SAUCE_REMOTE_URL == null) {
+            SAUCE_REMOTE_URL = "ondemand.saucelabs.com";
+        }
+        driver = new RemoteWebDriver(new URL("https://" + SAUCE_REMOTE_URL + "/wd/hub"), caps);
         sessionId = ((RemoteWebDriver)driver).getSessionId().toString();
         wait = new WebDriverWait(driver, 10);
 
