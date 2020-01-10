@@ -1,6 +1,9 @@
 package io.cucumber;
 
-import com.saucelabs.saucerest.SauceREST;
+import com.saucelabs.simplesauce.Browser;
+import com.saucelabs.simplesauce.SauceOptions;
+import com.saucelabs.simplesauce.SaucePlatform;
+import com.saucelabs.simplesauce.SauceSession;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -10,71 +13,78 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.stream.IntStream;
 
 public class StepDefinitions {
-    private WebDriver driver;
-    private String sessionId;
+    private SauceSession session;
     private WebDriverWait wait;
-
-    private String username = System.getenv("SAUCE_USERNAME");
-    private String accesskey = System.getenv("SAUCE_ACCESS_KEY");
-
-    private final String BASE_URL = "https://www.saucedemo.com";
-    private SauceUtils sauceUtils;
+    protected WebDriver driver;
 
     @Before
-    public void setUp(Scenario scenario) throws MalformedURLException {
-        //Set up the ChromeOptions object, which will store the capabilities for the Sauce run
-        ChromeOptions caps = new ChromeOptions();
-        caps.setCapability("version", "72.0");
-        caps.setCapability("platform", "Windows 10");
-        caps.setExperimentalOption("w3c", true);
+    public void setUp(Scenario scenario) {
+        SauceOptions options = new SauceOptions();
+        options.setName(scenario.getName());
 
-        //Create a map of capabilities called "sauce:options", which contain the info necessary to run on Sauce
-        // Labs, using the credentials stored in the environment variables. Also runs using the new W3C standard.
-        MutableCapabilities sauceOptions = new MutableCapabilities();
-        sauceOptions.setCapability("username", username);
-        sauceOptions.setCapability("accessKey", accesskey);
-        sauceOptions.setCapability("seleniumVersion", "3.141.59");
-        sauceOptions.setCapability("name", scenario.getName());
+        if (System.getenv("START_TIME") != null) {
+            options.setBuild("Build Time: " + System.getenv("START_TIME"));
+        }
 
-        //Assign the Sauce Options to the base capabilities
-        caps.setCapability("sauce:options", sauceOptions);
+        String platform;
+        if (System.getProperty("platform") != null) {
+            platform = System.getProperty("platform");
+        } else {
+            platform = "default";
+        }
 
-        //Create a new RemoteWebDriver, which will initialize the test execution on Sauce Labs servers
-        String SAUCE_REMOTE_URL = "https://ondemand.saucelabs.com/wd/hub";
-        driver = new RemoteWebDriver(new URL(SAUCE_REMOTE_URL), caps);
-        sessionId = ((RemoteWebDriver)driver).getSessionId().toString();
+        switch(platform) {
+            case "windows_10_edge":
+                options.setPlatformName(SaucePlatform.WINDOWS_10);
+                options.setBrowserName(Browser.EDGE);
+                break;
+            case "mac_sierra_chrome":
+                options.setPlatformName(SaucePlatform.MAC_SIERRA);
+                options.setBrowserName(Browser.CHROME);
+                break;
+            case "windows_8_ff":
+                options.setPlatformName(SaucePlatform.WINDOWS_8);
+                options.setBrowserName(Browser.FIREFOX);
+                break;
+            case "windows_8_1_ie":
+                options.setPlatformName(SaucePlatform.WINDOWS_8_1);
+                options.setBrowserName(Browser.INTERNET_EXPLORER);
+                break;
+            case "mac_mojave_safari":
+                options.setPlatformName(SaucePlatform.MAC_MOJAVE);
+                options.setBrowserName(Browser.SAFARI);
+                break;
+            default:
+                // accept Sauce defaults
+                break;
+        }
+
+        session = new SauceSession(options);
+        driver = session.start();
+
         wait = new WebDriverWait(driver, 10);
-
-        SauceREST sauceREST = new SauceREST(username, accesskey);
-        sauceUtils = new SauceUtils(sauceREST);
     }
 
     @After
     public void tearDown(Scenario scenario){
-        driver.quit();
-        sauceUtils.updateResults(!scenario.isFailed(), sessionId);
+        session.stop(!scenario.isFailed());
     }
 
     @Given("^I go to the login page$")
     public void go_to_login_page() {
-        driver.get(BASE_URL);
+        driver.get("https://www.saucedemo.com");
     }
 
     @Given("I am on the inventory page")
     public void go_to_the_inventory_page(){
-        driver.get(BASE_URL + "/inventory.html");
+        driver.get("https://www.saucedemo.com/inventory.html");
     }
 
     @When("I login as a valid user")
